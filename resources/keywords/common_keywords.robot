@@ -39,15 +39,16 @@ Verify On Inventory Page
     Element Text Should Be           ${LOC_PAGE_TITLE}    Products
 
 Add Item To Cart
-    [Documentation]    Click the first available Add to Cart button via JavaScript to avoid interception.
+    [Documentation]    Click the first available Add to Cart button and wait for badge to confirm.
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=10s
-    Execute Javascript    document.querySelector("[data-test^='add-to-cart']").click()
+    Click Element                    ${LOC_ADD_TO_CART}
     Wait Until Element Is Visible    ${LOC_CART_BADGE}    timeout=10s
 
 Go To Cart
     [Documentation]    Click the cart icon to navigate to the cart page.
     Wait Until Element Is Visible    ${LOC_CART_ICON}    timeout=10s
     Click Element                    ${LOC_CART_ICON}
+    Wait Until Element Is Visible    ${LOC_CHECKOUT_BTN}    timeout=10s
 
 Verify Cart Badge Count
     [Documentation]    Assert the cart badge shows the expected item count.
@@ -80,12 +81,9 @@ Verify Order Confirmed
     Element Text Should Be           ${LOC_CONFIRM_HEADER}    Thank you for your order!
 
 Reset App State
-    [Documentation]    Clear SauceDemo cart and session state via localStorage, then reload inventory.
-    ...                Use this as Test Setup when tests share a browser session.
-    Execute Javascript    window.localStorage.clear()
-    Go To                 ${INVENTORY_URL}
-    ${on_login}=    Run Keyword And Return Status    Element Should Be Visible    ${LOC_LOGIN_BTN}
-    IF    ${on_login}
-        Login With Valid Credentials
-    END
+    [Documentation]    Navigate to login page and log in fresh to guarantee a clean session.
+    ...                SauceDemo cart state lives in React memory - only a fresh login resets it reliably.
+    Go To                            ${BASE_URL}
+    Wait Until Element Is Visible    ${LOC_LOGIN_BTN}    timeout=10s
+    Login With Valid Credentials
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s

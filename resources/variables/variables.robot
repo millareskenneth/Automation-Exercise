@@ -12,7 +12,7 @@ ${VALID_USER}       standard_user
 ${VALID_PASSWORD}   secret_sauce
 
 # Invalid credentials
-${INVALID_USER}     invalid_user
+${INVALID_USER}         standard_user
 ${INVALID_PASSWORD}     wrong_password
 
 # Locked out user
