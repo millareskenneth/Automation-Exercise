@@ -44,20 +44,24 @@ Add Item To Cart
 
 Go To Cart
     [Documentation]    Click the cart icon to navigate to the cart page.
-    Click Element     ${LOC_CART_ICON}
+    Wait Until Element Is Visible    ${LOC_CART_ICON}    timeout=10s
+    Click Element                    ${LOC_CART_ICON}
 
 Verify Cart Badge Count
     [Documentation]    Assert the cart badge shows the expected item count.
     [Arguments]        ${expected_count}
-    Element Text Should Be    ${LOC_CART_BADGE}    ${expected_count}
+    Wait Until Element Is Visible    ${LOC_CART_BADGE}    timeout=10s
+    Element Text Should Be           ${LOC_CART_BADGE}    ${expected_count}
 
 Proceed To Checkout
     [Documentation]    Click the Checkout button on the cart page.
-    Click Button    ${LOC_CHECKOUT_BTN}
+    Wait Until Element Is Visible    ${LOC_CHECKOUT_BTN}    timeout=10s
+    Click Button                     ${LOC_CHECKOUT_BTN}
 
 Fill Checkout Info
     [Documentation]    Fill in customer info on checkout step one.
     [Arguments]    ${first}    ${last}    ${zip}
+    Wait Until Element Is Visible    ${LOC_FIRST_NAME}    timeout=10s
     Input Text      ${LOC_FIRST_NAME}   ${first}
     Input Text      ${LOC_LAST_NAME}    ${last}
     Input Text      ${LOC_ZIP_CODE}     ${zip}
@@ -65,11 +69,13 @@ Fill Checkout Info
 
 Finish Order
     [Documentation]    Click Finish on checkout step two to place the order.
-    Click Button    ${LOC_FINISH_BTN}
+    Wait Until Element Is Visible    ${LOC_FINISH_BTN}    timeout=10s
+    Click Button                     ${LOC_FINISH_BTN}
 
 Verify Order Confirmed
     [Documentation]    Assert the order confirmation message is displayed.
-    Element Text Should Be    ${LOC_CONFIRM_HEADER}    Thank you for your order!
+    Wait Until Element Is Visible    ${LOC_CONFIRM_HEADER}    timeout=15s
+    Element Text Should Be           ${LOC_CONFIRM_HEADER}    Thank you for your order!
 
 Reset App State
     [Documentation]    Clear SauceDemo cart and session state via localStorage, then reload inventory.
