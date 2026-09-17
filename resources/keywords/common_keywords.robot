@@ -39,7 +39,8 @@ Verify On Inventory Page
 
 Add Item To Cart
     [Documentation]    Click the first available Add to Cart button.
-    Click Element     ${LOC_ADD_TO_CART}
+    Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=10s
+    Click Element                    ${LOC_ADD_TO_CART}
 
 Go To Cart
     [Documentation]    Click the cart icon to navigate to the cart page.
@@ -80,4 +81,4 @@ Reset App State
     IF    ${is_login_page}
         Login With Valid Credentials
     END
-    Wait Until Element Is Visible    ${LOC_PAGE_TITLE}    timeout=10s
+    Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
