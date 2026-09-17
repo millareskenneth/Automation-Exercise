@@ -69,3 +69,9 @@ Finish Order
 Verify Order Confirmed
     [Documentation]    Assert the order confirmation message is displayed.
     Element Text Should Be    ${LOC_CONFIRM_HEADER}    Thank you for your order!
+
+Reset App State
+    [Documentation]    Clear SauceDemo cart and session state via localStorage, then reload inventory.
+    ...                Use this as Test Setup when tests share a browser session.
+    Execute Javascript    window.localStorage.clear()
+    Go To                 ${INVENTORY_URL}
