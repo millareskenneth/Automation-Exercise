@@ -9,22 +9,25 @@ Resource            ../../resources/locators/locators.robot
 
 Suite Setup         Open Browser To Login Page
 Suite Teardown      Close Test Browser
+Test Setup          Reset App State
 
 
 *** Test Cases ***
 Smoke - Login Page Is Accessible
     [Documentation]    Verify the SauceDemo login page loads and the login button is present.
     [Tags]    smoke
+    [Setup]    Go To    ${BASE_URL}
     Element Should Be Visible    ${LOC_LOGIN_BTN}
 
 Smoke - Valid Login Works
     [Documentation]    Standard user can log in and reach the inventory page.
     [Tags]    smoke
+    [Setup]    Go To    ${BASE_URL}
     Login With Valid Credentials
     Verify On Inventory Page
 
 Smoke - Add Item And Verify Cart Badge
-    [Documentation]    Adding one item shows badge count 1.
+    [Documentation]    Adding one item shows badge count 1 on the cart icon.
     [Tags]    smoke
     Add Item To Cart
     Verify Cart Badge Count    1

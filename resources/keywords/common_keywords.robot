@@ -73,5 +73,11 @@ Verify Order Confirmed
 Reset App State
     [Documentation]    Clear SauceDemo cart and session state via localStorage, then reload inventory.
     ...                Use this as Test Setup when tests share a browser session.
-    Execute Javascript    window.localStorage.clear()
-    Go To                 ${INVENTORY_URL}
+    Execute Javascript               window.localStorage.clear()
+    Go To                            ${INVENTORY_URL}
+    ${is_login_page}=    Run Keyword And Return Status
+    ...    Element Should Be Visible    ${LOC_LOGIN_BTN}
+    IF    ${is_login_page}
+        Login With Valid Credentials
+    END
+    Wait Until Element Is Visible    ${LOC_PAGE_TITLE}    timeout=10s
