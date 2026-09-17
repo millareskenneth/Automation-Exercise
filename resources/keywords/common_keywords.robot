@@ -1,5 +1,6 @@
 *** Settings ***
 Library     SeleniumLibrary
+Library     ../../libraries/custom_utils.py
 Resource    ../variables/variables.robot
 Resource    ../locators/locators.robot
 
@@ -7,8 +8,10 @@ Resource    ../locators/locators.robot
 *** Keywords ***
 Open Browser To Login Page
     [Documentation]    Launch browser and navigate to the SauceDemo login page.
-    Open Browser    ${BASE_URL}    ${BROWSER}
+    ${browser_name}=    Set Variable If    '${HEADLESS}' == 'true' or '${HEADLESS}' == 'True'    headlesschrome    ${BROWSER}
+    Open Browser    ${BASE_URL}    ${browser_name}
     Maximize Browser Window
+    Set Selenium Speed    ${SELENIUM_SPEED}
 
 Close Test Browser
     [Documentation]    Close the browser after each test.
@@ -16,16 +19,15 @@ Close Test Browser
 
 Login With Valid Credentials
     [Documentation]    Log in using the standard valid user account.
-    Input Text        ${LOC_USERNAME}     ${VALID_USER}
-    Input Text        ${LOC_PASSWORD}     ${VALID_PASSWORD}
-    Click Button      ${LOC_LOGIN_BTN}
+    Login With Credentials    ${VALID_USER}    ${VALID_PASSWORD}
 
 Login With Credentials
     [Documentation]    Log in using provided username and password.
     [Arguments]        ${username}    ${password}
-    Input Text        ${LOC_USERNAME}     ${username}
-    Input Text        ${LOC_PASSWORD}     ${password}
-    Click Button      ${LOC_LOGIN_BTN}
+    Wait Until Element Is Visible    ${LOC_USERNAME}     timeout=10s
+    Set React Input Value            ${LOC_USERNAME}     ${username}
+    Set React Input Value            ${LOC_PASSWORD}     ${password}
+    Click Element JS                 ${LOC_LOGIN_BTN}
 
 Verify Error Message
     [Documentation]    Assert the login error banner contains the expected text.
@@ -41,12 +43,12 @@ Verify On Inventory Page
 Add Item To Cart
     [Documentation]    Click the first available Add to Cart button.
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=10s
-    Click Element                    ${LOC_ADD_TO_CART}
+    Click Element JS                 ${LOC_ADD_TO_CART}
 
 Go To Cart
     [Documentation]    Click the cart icon to navigate to the cart page.
     Wait Until Element Is Visible    ${LOC_CART_ICON}    timeout=10s
-    Click Element                    ${LOC_CART_ICON}
+    Click Element JS                 ${LOC_CART_ICON}
 
 Verify Cart Badge Count
     [Documentation]    Assert the cart badge shows the expected item count.
@@ -57,21 +59,21 @@ Verify Cart Badge Count
 Proceed To Checkout
     [Documentation]    Click the Checkout button on the cart page.
     Wait Until Element Is Visible    ${LOC_CHECKOUT_BTN}    timeout=10s
-    Click Button                     ${LOC_CHECKOUT_BTN}
+    Click Element JS                 ${LOC_CHECKOUT_BTN}
 
 Fill Checkout Info
     [Documentation]    Fill in customer info on checkout step one.
     [Arguments]    ${first}    ${last}    ${zip}
     Wait Until Element Is Visible    ${LOC_FIRST_NAME}    timeout=10s
-    Input Text      ${LOC_FIRST_NAME}   ${first}
-    Input Text      ${LOC_LAST_NAME}    ${last}
-    Input Text      ${LOC_ZIP_CODE}     ${zip}
-    Click Button    ${LOC_CONTINUE_BTN}
+    Set React Input Value    ${LOC_FIRST_NAME}   ${first}
+    Set React Input Value    ${LOC_LAST_NAME}    ${last}
+    Set React Input Value    ${LOC_ZIP_CODE}     ${zip}
+    Click Element JS         ${LOC_CONTINUE_BTN}
 
 Finish Order
     [Documentation]    Click Finish on checkout step two to place the order.
     Wait Until Element Is Visible    ${LOC_FINISH_BTN}    timeout=10s
-    Click Button                     ${LOC_FINISH_BTN}
+    Click Element JS                 ${LOC_FINISH_BTN}
 
 Verify Order Confirmed
     [Documentation]    Assert the order confirmation message is displayed.
@@ -89,3 +91,15 @@ Reset App State
         Login With Valid Credentials
     END
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
+
+Start Session
+    [Documentation]    Open a fresh browser, navigate to login page, and log in.
+    ...                Use as Test Setup for suites that need a clean logged-in state per test.
+    Open Browser To Login Page
+    Login With Valid Credentials
+    Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
+
+End Session
+    [Documentation]    Close the browser. Use as Test Teardown.
+    Close Browser
+

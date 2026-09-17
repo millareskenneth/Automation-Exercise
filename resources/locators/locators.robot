@@ -3,7 +3,7 @@
 ${LOC_USERNAME}         id:user-name
 ${LOC_PASSWORD}         id:password
 ${LOC_LOGIN_BTN}        id:login-button
-${LOC_ERROR_MSG}        css:[data-test='error']
+${LOC_ERROR_MSG}        css:[data-test="error"]
 
 # --- Inventory Page ---
 ${LOC_PAGE_TITLE}       class:title

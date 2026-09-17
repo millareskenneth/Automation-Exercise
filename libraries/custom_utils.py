@@ -90,3 +90,36 @@ class custom_utils:
         """
         cleaned = price_str.replace("$", "").replace(",", "").strip()
         return float(cleaned)
+
+    # ------------------------------------------------------------------
+    # Browser Interaction Helpers (React & Headless compatibility)
+    # ------------------------------------------------------------------
+
+    @keyword("Set React Input Value")
+    def set_react_input_value(self, locator: str, value: str) -> None:
+        """Set an input field value in React applications bypassing synthetic event issues."""
+        from robot.libraries.BuiltIn import BuiltIn
+        sel_lib = BuiltIn().get_library_instance("SeleniumLibrary")
+        element = sel_lib.find_element(locator)
+        js_code = """
+        var el = arguments[0];
+        var val = arguments[1];
+        var valueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+        if (valueSetter) {
+            valueSetter.call(el, val);
+        } else {
+            el.value = val;
+        }
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        el.dispatchEvent(new Event('change', { bubbles: true }));
+        """
+        sel_lib.driver.execute_script(js_code, element, value)
+
+    @keyword("Click Element JS")
+    def click_element_js(self, locator: str) -> None:
+        """Click an element using JavaScript to handle React event listeners in headless environments."""
+        from robot.libraries.BuiltIn import BuiltIn
+        sel_lib = BuiltIn().get_library_instance("SeleniumLibrary")
+        element = sel_lib.find_element(locator)
+        sel_lib.driver.execute_script("arguments[0].click();", element)
+
