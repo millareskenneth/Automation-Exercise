@@ -10,6 +10,7 @@ Resource            ../../resources/locators/locators.robot
 
 Suite Setup         Open Browser To Login Page
 Suite Teardown      Close Test Browser
+Test Setup          Go To    ${BASE_URL}
 
 
 *** Test Cases ***
