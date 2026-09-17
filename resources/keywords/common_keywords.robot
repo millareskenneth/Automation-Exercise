@@ -39,9 +39,10 @@ Verify On Inventory Page
     Element Text Should Be           ${LOC_PAGE_TITLE}    Products
 
 Add Item To Cart
-    [Documentation]    Click the first available Add to Cart button.
+    [Documentation]    Click the first available Add to Cart button via JavaScript to avoid interception.
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=10s
-    Click Element                    ${LOC_ADD_TO_CART}
+    Execute Javascript    document.querySelector("[data-test^='add-to-cart']").click()
+    Wait Until Element Is Visible    ${LOC_CART_BADGE}    timeout=10s
 
 Go To Cart
     [Documentation]    Click the cart icon to navigate to the cart page.
@@ -81,13 +82,10 @@ Verify Order Confirmed
 Reset App State
     [Documentation]    Clear SauceDemo cart and session state via localStorage, then reload inventory.
     ...                Use this as Test Setup when tests share a browser session.
-    Execute Javascript               window.localStorage.clear()
-    Go To                            ${INVENTORY_URL}
-    ${is_login_page}=    Run Keyword And Return Status
-    ...    Element Should Be Visible    ${LOC_LOGIN_BTN}
-    IF    ${is_login_page}
+    Execute Javascript    window.localStorage.clear()
+    Go To                 ${INVENTORY_URL}
+    ${on_login}=    Run Keyword And Return Status    Element Should Be Visible    ${LOC_LOGIN_BTN}
+    IF    ${on_login}
         Login With Valid Credentials
     END
-    Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
-    Execute Javascript               window.location.reload()
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
