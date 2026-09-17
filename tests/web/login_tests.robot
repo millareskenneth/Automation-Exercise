@@ -8,8 +8,9 @@ Resource            ../../resources/keywords/common_keywords.robot
 Resource            ../../resources/variables/variables.robot
 Resource            ../../resources/locators/locators.robot
 
-Test Setup          Open Browser To Login Page
-Test Teardown       End Session
+Suite Setup         Open Browser To Login Page
+Suite Teardown      Close Test Browser
+Test Setup          Go To    ${BASE_URL}
 
 
 *** Test Cases ***

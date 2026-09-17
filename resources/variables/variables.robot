@@ -8,6 +8,7 @@ ${CHECKOUT_URL}     https://www.saucedemo.com/checkout-step-one.html
 # Browser config
 ${BROWSER}          chrome
 ${HEADLESS}         false
+${SELENIUM_SPEED}   0.5s
 
 # Chrome options string (SeleniumLibrary parses this into ChromeOptions).
 # Suppresses the Chrome updater, telemetry, sync, notifications and console noise
