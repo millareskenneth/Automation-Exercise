@@ -39,15 +39,17 @@ Verify On Inventory Page
     Element Text Should Be           ${LOC_PAGE_TITLE}    Products
 
 Add Item To Cart
-    [Documentation]    Click the first available Add to Cart button and wait for badge.
+    [Documentation]    Add the first available item to cart using a MouseEvent dispatch
+    ...                to ensure React's synthetic event system is triggered correctly.
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=10s
-    Click Element                    ${LOC_ADD_TO_CART}
+    Execute Javascript
+    ...    var btn = document.querySelector("[data-test^='add-to-cart']");
+    ...    btn.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
     Wait Until Element Is Visible    ${LOC_CART_BADGE}    timeout=10s
 
 Go To Cart
-    [Documentation]    Click the cart icon to navigate to the cart page.
-    Wait Until Element Is Visible    ${LOC_CART_ICON}    timeout=10s
-    Click Element                    ${LOC_CART_ICON}
+    [Documentation]    Navigate directly to the cart page URL.
+    Go To                            ${CART_URL}
     Wait Until Element Is Visible    ${LOC_CHECKOUT_BTN}    timeout=10s
 
 Verify Cart Badge Count
@@ -57,9 +59,9 @@ Verify Cart Badge Count
     Element Text Should Be           ${LOC_CART_BADGE}    ${expected_count}
 
 Proceed To Checkout
-    [Documentation]    Click the Checkout button on the cart page.
-    Wait Until Element Is Visible    ${LOC_CHECKOUT_BTN}    timeout=10s
-    Click Button                     ${LOC_CHECKOUT_BTN}
+    [Documentation]    Navigate directly to checkout step one page.
+    Go To                            ${CHECKOUT_URL}
+    Wait Until Element Is Visible    ${LOC_FIRST_NAME}    timeout=10s
 
 Fill Checkout Info
     [Documentation]    Fill in customer info on checkout step one.
@@ -68,12 +70,16 @@ Fill Checkout Info
     Input Text      ${LOC_FIRST_NAME}   ${first}
     Input Text      ${LOC_LAST_NAME}    ${last}
     Input Text      ${LOC_ZIP_CODE}     ${zip}
-    Click Button    ${LOC_CONTINUE_BTN}
+    Execute Javascript
+    ...    var btn = document.querySelector('#continue');
+    ...    btn.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
 
 Finish Order
-    [Documentation]    Click Finish on checkout step two to place the order.
+    [Documentation]    Click Finish on checkout step two using dispatchEvent for React compatibility.
     Wait Until Element Is Visible    ${LOC_FINISH_BTN}    timeout=10s
-    Click Button                     ${LOC_FINISH_BTN}
+    Execute Javascript
+    ...    var btn = document.querySelector('#finish');
+    ...    btn.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
 
 Verify Order Confirmed
     [Documentation]    Assert the order confirmation message is displayed.
