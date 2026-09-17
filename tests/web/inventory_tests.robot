@@ -9,6 +9,7 @@ Resource            ../../resources/locators/locators.robot
 
 Suite Setup         Run Keywords    Open Browser To Login Page    AND    Login With Valid Credentials
 Suite Teardown      Close Test Browser
+Test Setup          Go To    ${INVENTORY_URL}
 
 
 *** Test Cases ***
