@@ -30,12 +30,13 @@ Login With Credentials
 Verify Error Message
     [Documentation]    Assert the login error banner contains the expected text.
     [Arguments]        ${expected_message}
-    Element Should Be Visible    ${LOC_ERROR_MSG}
-    Element Text Should Be       ${LOC_ERROR_MSG}    ${expected_message}
+    Wait Until Element Is Visible    ${LOC_ERROR_MSG}    timeout=10s
+    Element Text Should Be           ${LOC_ERROR_MSG}    ${expected_message}
 
 Verify On Inventory Page
     [Documentation]    Assert that the inventory/products page has loaded.
-    Element Text Should Be    ${LOC_PAGE_TITLE}    Products
+    Wait Until Element Is Visible    ${LOC_PAGE_TITLE}    timeout=10s
+    Element Text Should Be           ${LOC_PAGE_TITLE}    Products
 
 Add Item To Cart
     [Documentation]    Click the first available Add to Cart button.
