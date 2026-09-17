@@ -39,7 +39,7 @@ Verify On Inventory Page
     Element Text Should Be           ${LOC_PAGE_TITLE}    Products
 
 Add Item To Cart
-    [Documentation]    Click the first available Add to Cart button and wait for badge to confirm.
+    [Documentation]    Click the first available Add to Cart button and wait for badge.
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=10s
     Click Element                    ${LOC_ADD_TO_CART}
     Wait Until Element Is Visible    ${LOC_CART_BADGE}    timeout=10s
@@ -80,10 +80,14 @@ Verify Order Confirmed
     Wait Until Element Is Visible    ${LOC_CONFIRM_HEADER}    timeout=15s
     Element Text Should Be           ${LOC_CONFIRM_HEADER}    Thank you for your order!
 
-Reset App State
-    [Documentation]    Navigate to login page and log in fresh to guarantee a clean session.
-    ...                SauceDemo cart state lives in React memory - only a fresh login resets it reliably.
-    Go To                            ${BASE_URL}
-    Wait Until Element Is Visible    ${LOC_LOGIN_BTN}    timeout=10s
+Start Session
+    [Documentation]    Open a fresh browser, navigate to login page, and log in.
+    ...                Use as Test Setup for suites that need a clean logged-in state per test.
+    Open Browser To Login Page
     Login With Valid Credentials
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
+    Sleep    0.5s
+
+End Session
+    [Documentation]    Close the browser. Use as Test Teardown.
+    Close Browser

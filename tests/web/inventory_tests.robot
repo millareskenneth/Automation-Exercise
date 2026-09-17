@@ -7,9 +7,8 @@ Resource            ../../resources/keywords/common_keywords.robot
 Resource            ../../resources/variables/variables.robot
 Resource            ../../resources/locators/locators.robot
 
-Suite Setup         Run Keywords    Open Browser To Login Page    AND    Login With Valid Credentials
-Suite Teardown      Close Test Browser
-Test Setup          Reset App State
+Test Setup          Start Session
+Test Teardown       End Session
 
 
 *** Test Cases ***
