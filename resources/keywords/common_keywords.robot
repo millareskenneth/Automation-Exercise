@@ -91,3 +91,15 @@ Reset App State
         Login With Valid Credentials
     END
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
+
+Start Session
+    [Documentation]    Open a fresh browser, navigate to login page, and log in.
+    ...                Use as Test Setup for suites that need a clean logged-in state per test.
+    Open Browser To Login Page
+    Login With Valid Credentials
+    Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
+
+End Session
+    [Documentation]    Close the browser. Use as Test Teardown.
+    Close Browser
+
