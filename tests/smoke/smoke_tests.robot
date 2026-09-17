@@ -15,7 +15,8 @@ Smoke - Login Page Is Accessible
     [Documentation]    Verify the SauceDemo login page loads and the login button is present.
     [Tags]    smoke
     Open Browser To Login Page
-    Element Should Be Visible    ${LOC_LOGIN_BTN}
+    Wait Until Element Is Visible    ${LOC_LOGIN_BTN}    timeout=10s
+    Element Should Be Visible        ${LOC_LOGIN_BTN}
 
 Smoke - Valid Login Works
     [Documentation]    Standard user can log in and reach the inventory page.

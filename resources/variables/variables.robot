@@ -9,6 +9,11 @@ ${CHECKOUT_URL}     https://www.saucedemo.com/checkout-step-one.html
 ${BROWSER}          chrome
 ${HEADLESS}         false
 
+# Chrome options string (SeleniumLibrary parses this into ChromeOptions).
+# Suppresses the Chrome updater, telemetry, sync, notifications and console noise
+# that otherwise spawns extra/blank windows and floods the log.
+${CHROME_OPTIONS}   add_argument("--window-size=1600,1000"); add_argument("--disable-notifications"); add_argument("--disable-component-update"); add_argument("--disable-background-networking"); add_argument("--disable-sync"); add_argument("--no-first-run"); add_argument("--no-default-browser-check"); add_argument("--disable-gpu"); add_argument("--log-level=3"); add_experimental_option("excludeSwitches", ["enable-logging"])
+
 # Valid credentials
 ${VALID_USER}       standard_user
 ${VALID_PASSWORD}   secret_sauce

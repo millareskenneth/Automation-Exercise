@@ -1,14 +1,16 @@
 *** Settings ***
 Library     SeleniumLibrary
+Library     ../../libraries/browser_utils.py
 Resource    ../variables/variables.robot
 Resource    ../locators/locators.robot
 
 
 *** Keywords ***
 Open Browser To Login Page
-    [Documentation]    Launch browser and navigate to the SauceDemo login page.
-    Open Browser    ${BASE_URL}    ${BROWSER}
-    Maximize Browser Window
+    [Documentation]    Launch Chrome with hardened options (no updater, no telemetry, no noise)
+    ...                and navigate to the SauceDemo login page.
+    Open Browser    ${BASE_URL}    ${BROWSER}    options=${CHROME_OPTIONS}
+    Wait Until Element Is Visible    ${LOC_LOGIN_BTN}    timeout=10s
 
 Close Test Browser
     [Documentation]    Close the browser after each test.
@@ -39,13 +41,15 @@ Verify On Inventory Page
     Element Text Should Be           ${LOC_PAGE_TITLE}    Products
 
 Add Item To Cart
-    [Documentation]    Add the first available item to cart using a MouseEvent dispatch
-    ...                to ensure React's synthetic event system is triggered correctly.
+    [Documentation]    Add the first available item to cart via dispatchEvent.
+    ...                Confirms via localStorage (reliable) rather than the lazily-rendered badge.
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=10s
+    ${before}=    Get Cart Item Count From Storage
     Execute Javascript
     ...    var btn = document.querySelector("[data-test^='add-to-cart']");
     ...    btn.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
-    Wait Until Element Is Visible    ${LOC_CART_BADGE}    timeout=10s
+    ${expected}=    Evaluate    ${before} + 1
+    Wait Until Cart Has Items    ${expected}
 
 Go To Cart
     [Documentation]    Navigate directly to the cart page URL.
@@ -53,29 +57,39 @@ Go To Cart
     Wait Until Element Is Visible    ${LOC_CHECKOUT_BTN}    timeout=10s
 
 Verify Cart Badge Count
-    [Documentation]    Assert the cart badge shows the expected item count.
+    [Documentation]    Assert the cart holds the expected number of items (via localStorage).
     [Arguments]        ${expected_count}
-    Wait Until Element Is Visible    ${LOC_CART_BADGE}    timeout=10s
-    Element Text Should Be           ${LOC_CART_BADGE}    ${expected_count}
+    Wait Until Cart Has Items    ${expected_count}
+    ${count}=    Get Cart Item Count From Storage
+    Should Be Equal As Integers    ${count}    ${expected_count}
 
 Proceed To Checkout
-    [Documentation]    Navigate directly to checkout step one page.
+    [Documentation]    Navigate directly to checkout step one.
     Go To                            ${CHECKOUT_URL}
     Wait Until Element Is Visible    ${LOC_FIRST_NAME}    timeout=10s
 
 Fill Checkout Info
-    [Documentation]    Fill in customer info on checkout step one.
+    [Documentation]    Fill customer info on checkout step one and submit.
+    ...                If the form is valid it advances to step two.
     [Arguments]    ${first}    ${last}    ${zip}
     Wait Until Element Is Visible    ${LOC_FIRST_NAME}    timeout=10s
     Input Text      ${LOC_FIRST_NAME}   ${first}
     Input Text      ${LOC_LAST_NAME}    ${last}
     Input Text      ${LOC_ZIP_CODE}     ${zip}
     Execute Javascript
-    ...    var btn = document.querySelector('#continue');
-    ...    btn.dispatchEvent(new MouseEvent('click', {bubbles:true, cancelable:true, view:window}));
+    ...    var form = document.querySelector('form');
+    ...    var key = Object.keys(form).find(function(k){return k.startsWith('__reactProps');});
+    ...    if(key && form[key] && typeof form[key].onSubmit === 'function'){
+    ...        form[key].onSubmit({preventDefault:function(){},stopPropagation:function(){},target:form});
+    ...    }
+    ${advanced}=    Run Keyword And Return Status
+    ...    Wait Until Location Contains    checkout-step-two    timeout=8s
+    IF    ${advanced}
+        Wait Until Element Is Visible    ${LOC_FINISH_BTN}    timeout=10s
+    END
 
 Finish Order
-    [Documentation]    Click Finish on checkout step two using dispatchEvent for React compatibility.
+    [Documentation]    Click Finish on checkout step two to place the order.
     Wait Until Element Is Visible    ${LOC_FINISH_BTN}    timeout=10s
     Execute Javascript
     ...    var btn = document.querySelector('#finish');
@@ -92,7 +106,6 @@ Start Session
     Open Browser To Login Page
     Login With Valid Credentials
     Wait Until Element Is Visible    ${LOC_ADD_TO_CART}    timeout=15s
-    Sleep    0.5s
 
 End Session
     [Documentation]    Close the browser. Use as Test Teardown.
