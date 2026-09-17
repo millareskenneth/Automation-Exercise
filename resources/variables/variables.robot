@@ -1,6 +1,7 @@
 *** Variables ***
 # Base URL
 ${BASE_URL}         https://www.saucedemo.com
+${INVENTORY_URL}    https://www.saucedemo.com/inventory.html
 
 # Browser config
 ${BROWSER}          chrome
@@ -12,7 +13,7 @@ ${VALID_PASSWORD}   secret_sauce
 
 # Invalid credentials
 ${INVALID_USER}     invalid_user
-${INVALID_PASSWORD} wrong_password
+${INVALID_PASSWORD}     wrong_password
 
 # Locked out user
 ${LOCKED_USER}      locked_out_user
