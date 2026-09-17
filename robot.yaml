@@ -1,0 +1,15 @@
+# Robot Framework execution configuration
+tasks:
+  - tests/
+
+variables:
+  BASE_URL: "https://www.saucedemo.com"
+  BROWSER: "chrome"
+  HEADLESS: "false"
+
+output_dir: results
+
+robot:
+  output: output.xml
+  log: log.html
+  report: report.html
