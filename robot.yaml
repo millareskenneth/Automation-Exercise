@@ -6,6 +6,8 @@ variables:
   BASE_URL: "https://www.saucedemo.com"
   BROWSER: "chrome"
   HEADLESS: "false"
+  SELENIUM_SPEED: "0.5s"
+
 
 output_dir: results
 
